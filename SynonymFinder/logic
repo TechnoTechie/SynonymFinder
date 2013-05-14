@@ -1,0 +1,15 @@
+process CSV file
+organize into indexable array (hash table for speed)
+
+
+form word into search URL
+ - parse html from naver dic
+ - search for a word if last checked date exceeds 
+ - analyze for synonyms
+ - prevent going too far - search for bounds?
+ - if synonyms found
+ 	- determine if words exist in key using hashtable (only to be used for determining synonyms)
+ 	- if words exist, add as synonym
+ - else do nothing
+ - update last checked date
+ 
