@@ -61,18 +61,22 @@ public class Finder {
 		System.out.println("test: ");
 		List<String> synonyms = new ArrayList<>();
 		
+		/**
 		for(Element element : doc.select("a[class=fnt15]")){
 			element.select("strong");
 			
 			System.out.println(element.text());
-		}
+		} //*/
 		
 		for(Element element : doc.select("p[class=syn]") )
 		{
 		    for(Element child : element.children()) {
-		    	child.removeClass("sup");
+		    	for(Element child2 : child.children()){
+			    	child2.empty();
+		    	}
 		    	System.out.print("child: ");
 		    	System.out.println(child.text());
+		    	
 		    }
 			
 			synonyms.add(element.text());
