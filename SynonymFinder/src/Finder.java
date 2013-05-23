@@ -10,16 +10,18 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 
-import au.com.bytecode.opencsv.CSVReader;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.*;
+import au.com.bytecode.opencsv.CSVReader;
 
 public class Finder {
 
 	public static void main(String args[]) throws Exception{
-		//getNaverData();
-		processCSV();
+		lookupWord("통증");
+		//processCSV();
 	}
 	
 	public static void processCSV() throws IOException {
@@ -53,25 +55,37 @@ public class Finder {
 	}
 	
 	public static void lookupWord(String word) throws Exception {
-		final WebClient webClient = new WebClient();
-
-		// Get the first page
-		final HtmlPage page1 = webClient.getPage("http://krdic.naver.com/search.nhn?kind=keyword&query=" + word);
-
-		// Get the form that we are dealing with and within that form, 
-		// find the submit button and the field that we want to change.
-		final HtmlForm form = page1.getFormByName("myform");
-
-		final HtmlSubmitInput button = form.getInputByName("submitbutton");
-		final HtmlTextInput textField = form.getInputByName("userid");
-
-		// Change the value of the text field
-		textField.setValueAttribute("root");
-
-		// Now submit the form by clicking the button and get back the second page.
-		final HtmlPage page2 = button.click();
-
-		webClient.closeAllWindows();
+		
+		Document doc = Jsoup.connect("http://krdic.naver.com/search.nhn?kind=keyword&query=" + word).get();
+		Elements ps;
+		System.out.println("test: ");
+		List<String> synonyms = new ArrayList<>();
+		
+		for(Element element : doc.select("a[class=fnt15]")){
+			element.select("strong");
+			
+			System.out.println(element.text());
+		}
+		
+		for(Element element : doc.select("p[class=syn]") )
+		{
+		    for(Element child : element.children()) {
+		    	child.removeClass("sup");
+		    	System.out.print("child: ");
+		    	System.out.println(child.text());
+		    }
+			
+			synonyms.add(element.text());
+		    System.out.println(element.text());
+		}
+		
+		/**for(Element element : doc.select("p[class=syn]") )
+		{
+		    synonyms.add(element.text());
+		    System.out.println(element.text());
+		} //*/
+		
+		
 	}
 
 	private static class DictionaryWord{
